@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.1.32210.238
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "POWER_SUPPLY_CONTROL_SIMPLE", "POWER_SUPPLY_CONTROL_SIMPLE\POWER_SUPPLY_CONTROL_SIMPLE.csproj", "{F644A6CA-F94C-4A6C-931F-9C2307EC002F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PSC_script_maker", "PSC_script_maker\PSC_script_maker.csproj", "{15068D0D-4D83-4AEF-986C-639D311F53CD}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{F644A6CA-F94C-4A6C-931F-9C2307EC002F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F644A6CA-F94C-4A6C-931F-9C2307EC002F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F644A6CA-F94C-4A6C-931F-9C2307EC002F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F644A6CA-F94C-4A6C-931F-9C2307EC002F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{15068D0D-4D83-4AEF-986C-639D311F53CD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{15068D0D-4D83-4AEF-986C-639D311F53CD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{15068D0D-4D83-4AEF-986C-639D311F53CD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{15068D0D-4D83-4AEF-986C-639D311F53CD}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {12F92E2F-129E-4C57-A31F-8E71C1169DE6}
+	EndGlobalSection
+EndGlobal
