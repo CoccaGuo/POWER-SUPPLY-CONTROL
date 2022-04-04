@@ -91,7 +91,7 @@
             this.splitContainer1.Panel2.Controls.Add(this.label1);
             this.splitContainer1.Panel2.Controls.Add(this.portBox);
             this.splitContainer1.Size = new System.Drawing.Size(486, 184);
-            this.splitContainer1.SplitterDistance = 105;
+            this.splitContainer1.SplitterDistance = 104;
             this.splitContainer1.SplitterWidth = 5;
             this.splitContainer1.TabIndex = 0;
             // 
@@ -135,7 +135,7 @@
             this.infoLabel.Font = new System.Drawing.Font("微软雅黑", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.infoLabel.ForeColor = System.Drawing.SystemColors.Highlight;
             this.infoLabel.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.infoLabel.Location = new System.Drawing.Point(3, 81);
+            this.infoLabel.Location = new System.Drawing.Point(3, 78);
             this.infoLabel.Name = "infoLabel";
             this.infoLabel.Size = new System.Drawing.Size(244, 24);
             this.infoLabel.TabIndex = 4;
@@ -279,7 +279,8 @@
             // 
             this.portBox.Font = new System.Drawing.Font("微软雅黑", 10.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.portBox.FormattingEnabled = true;
-            this.portBox.Items.AddRange(System.IO.Ports.SerialPort.GetPortNames());
+            this.portBox.Items.AddRange(new object[] {
+            "COM1"});
             this.portBox.Location = new System.Drawing.Point(3, 32);
             this.portBox.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.portBox.Name = "portBox";

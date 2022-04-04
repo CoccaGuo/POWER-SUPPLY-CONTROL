@@ -4,7 +4,7 @@ using System.Linq;
 namespace POWER_SUPPLY_CONTROL_SIMPLE
 {
     internal class PortIO
-    {     
+    {
 
         public static byte[] SendReadCode()
         {
@@ -17,7 +17,7 @@ namespace POWER_SUPPLY_CONTROL_SIMPLE
             data[5] = 0x0F;
             data[6] = 0x04;
             data[7] = 0x1F;
-            return data;  
+            return data;
         }
 
         public static double[] ParseRecvCode(byte[] recv)
@@ -41,13 +41,13 @@ namespace POWER_SUPPLY_CONTROL_SIMPLE
             }
             catch (Exception)
             {
-                return new double[] {0, 0, 0, 0};
+                return new double[] { 0, 0, 0, 0 };
             }
         }
 
         public static byte[] SendSetCode(double volt, double curr, bool isOutput)
         {
-            byte[] data = new byte [13];
+            byte[] data = new byte[13];
             data[0] = 0x00;
             data[1] = 0x10;
             data[2] = 0x00;

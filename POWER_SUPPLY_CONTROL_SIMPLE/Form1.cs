@@ -4,7 +4,7 @@ using System.Windows.Forms;
 namespace POWER_SUPPLY_CONTROL_SIMPLE
 {
     public partial class Form1 : Form
-    {   
+    {
         ScriptParser parser;
         int countdownTimer;
         int unstableExceptionCounter = 0;
@@ -38,11 +38,11 @@ namespace POWER_SUPPLY_CONTROL_SIMPLE
                     serialPort1.PortName = portBox.Text;
                     serialPort1.BaudRate = 19200;
                     serialPort1.DataBits = 8;
-                 
+
                     serialPort1.Parity = System.IO.Ports.Parity.None;
-                   
+
                     serialPort1.StopBits = System.IO.Ports.StopBits.One;
-                  
+
 
                     serialPort1.Open();     //打开串口
                     timer1.Enabled = true;
@@ -89,12 +89,14 @@ namespace POWER_SUPPLY_CONTROL_SIMPLE
                 ALabel.Text = string.Format("{0:F3}", result[1]);
                 spVolt.Text = string.Format("{0:F2}", result[2]) + " V";
                 spCurr.Text = string.Format("{0:F3}", result[3]) + " A";
-            } catch (Exception) {
+            }
+            catch (Exception)
+            {
                 unstableExceptionCounter++;
-                if(unstableExceptionCounter >= 5) 
-                {   
+                if (unstableExceptionCounter >= 5)
+                {
                     unstableExceptionCounter = 0;
-                    infoLabel.Text = "数据接受可能不稳定。"; 
+                    infoLabel.Text = "数据接可能不稳定。";
                 }
             }
         }
@@ -124,6 +126,14 @@ namespace POWER_SUPPLY_CONTROL_SIMPLE
 
         private void openBtn_Click(object sender, EventArgs e)
         {
+            if (parser != null && parser.IsRunning)
+            {
+                parser.IsStop = true;
+                infoLabel.Text += ", Stop(Plan)";
+                startBtn.Enabled = false;
+                openBtn.Enabled = false;
+                return;
+            }
             openFileDialog1.InitialDirectory = "./";
             openFileDialog1.Filter = "PSC脚本文件|*.txt|所有文件|*.*";
             openFileDialog1.RestoreDirectory = true;
@@ -132,11 +142,12 @@ namespace POWER_SUPPLY_CONTROL_SIMPLE
                 string fName = openFileDialog1.FileName;
                 string script_name = System.IO.Path.GetFileNameWithoutExtension(fName);
                 infoLabel.Text = "loading script: " + script_name;
-                this.Text = "PSC: "+ script_name;
+                this.Text = "PSC: " + script_name;
                 try
                 {
                     parser = new ScriptParser(fName);
-                }catch (InvalidProgramException exc)
+                }
+                catch (InvalidProgramException exc)
                 {
                     infoLabel.Text = "脚本错误 => " + exc.Message;
                     return;
@@ -150,8 +161,8 @@ namespace POWER_SUPPLY_CONTROL_SIMPLE
                 {
                     infoLabel.Text = script_name + "已经打开。";
                     Text = "PSC: " + parser.Name;
-                    infoLabel.Text = "FUNC: "+parser.Name;
-                    countdownTimer = parser.Time/60;
+                    infoLabel.Text = "FUNC: " + parser.Name;
+                    countdownTimer = parser.Time / 60;
                     if (countdownTimer == 0)
                         timeLabel.Text = "< 1 min";
                     else
@@ -166,25 +177,53 @@ namespace POWER_SUPPLY_CONTROL_SIMPLE
 
         private void startBtn_Click(object sender, EventArgs e)
         {
+            if (parser != null && parser.IsRunning && !parser.IsPause)
+            {
+                parser.IsPause = true;
+                infoLabel.Text += ", Pause(Plan)";
+                openBtn.Enabled = false;
+                startBtn.Text = "继续";
+                return;
+
+            }
+            if (parser != null && parser.IsRunning && parser.IsPause)
+            {
+                parser.IsPause = false;
+                openBtn.Enabled = true;
+                startBtn.Text = "暂停";
+                return;
+            }
             timer2.Enabled = true;
-            openBtn.Enabled = false;
+            label4.Text = "结束程序";
+            openBtn.Text = "停止";
             portBox.Enabled = false;
             portBtn.Enabled = false;
-            startBtn.Enabled = false;
+            startBtn.Text = "暂停";
             infoLabel.Text = "Exec: " + parser.Name;
             try
             {
                 parser.Start(serialPort1, infoLabel);
-            } catch (InvalidProgramException ex)
+                parser = null;
+                infoLabel.Text = "Complete!";
+            }
+            catch (InvalidProgramException ex)
             {
                 infoLabel.Text = "Error at:" + ex.Message;
             }
-            infoLabel.Text = parser.Name + " Complete!";
-            timer2.Enabled = false;
-            openBtn.Enabled = true;
-            portBox.Enabled = true;
-            portBtn.Enabled =true;
-            startBtn.Enabled = true;
+            catch (NullReferenceException nptr)
+            {
+                infoLabel.Text = "Cmd parser force deleted.";
+            }
+            finally
+            {
+                openBtn.Enabled = true;
+                timer2.Enabled = false;
+                openBtn.Text = "打开";
+                label4.Text = "打开脚本";
+                portBox.Enabled = true;
+                portBtn.Enabled = true;
+                startBtn.Text = "开始";
+            }
         }
 
         private void timer2_Tick(object sender, EventArgs e)

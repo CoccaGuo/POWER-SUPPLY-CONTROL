@@ -9,10 +9,24 @@ namespace POWER_SUPPLY_CONTROL_SIMPLE
         double lastVolt = 0.0;
         double lastCurr = 0.0;
         bool isOutput = false;
+        bool isRunning = false;  // controlled by this class
+        bool isPause = false; // controlled by form1
+        bool isStop = false; // controlled by form1
         int length = 0;
         int time = 0;
 
+        System.IO.Ports.SerialPort port = null;
+
         List<string> commands = new List<string>();
+
+        ~ScriptParser()
+        {
+            if (port != null)
+            {
+                byte[] data_o = PortIO.SendSetCode(0.0, 0.0, false);
+                port.Write(data_o, 0, data_o.Length);
+            }
+        }
 
         public ScriptParser(string filepath)
         {
@@ -23,7 +37,7 @@ namespace POWER_SUPPLY_CONTROL_SIMPLE
                 if (line.Trim().Length == 0) continue;
                 if (line.Trim().ToUpper().StartsWith("FUNC"))
                 {
-                   Name = line.Trim().ToUpper().Split(' ')[1];
+                    Name = line.Trim().ToUpper().Split(' ')[1];
                 }
                 if (line.Trim().ToUpper().StartsWith("WAIT"))
                 {
@@ -33,7 +47,7 @@ namespace POWER_SUPPLY_CONTROL_SIMPLE
                     }
                     catch (Exception)
                     {
-                        throw new InvalidProgramException(line+", 时间应为整数。");
+                        throw new InvalidProgramException(line + ", 时间应为整数。");
                     }
                 }
                 Commands.Add(line.Trim().ToUpper());
@@ -55,9 +69,25 @@ namespace POWER_SUPPLY_CONTROL_SIMPLE
         public void Start(System.IO.Ports.SerialPort port, System.Windows.Forms.Label info)
         {
             // TODO
+            IsRunning = true;
             string lastCmd = "";
             foreach (string cmd in Commands)
-            {   
+            {
+                if (IsPause)
+                {
+                    info.Text += ", Paused";
+                    while (IsPause)
+                    {
+                        Delay(1000);
+                    }
+                }
+
+                if (IsStop)
+                {
+                    IsRunning = false;
+                    IsPause = false;
+                    return;
+                }
                 info.Text = "=> " + lastCmd + ", " + cmd;
                 lastCmd = cmd;
                 try
@@ -73,7 +103,7 @@ namespace POWER_SUPPLY_CONTROL_SIMPLE
                 }
                 catch (Exception)
                 {
-                    throw new InvalidProgramException(cmd+", 命令解析错误。");
+                    throw new InvalidProgramException(cmd + ", 命令解析错误。");
                 }
             }
 
@@ -83,7 +113,7 @@ namespace POWER_SUPPLY_CONTROL_SIMPLE
         {
             string[] cmds = cmd.Split(' ');
             int waitTime = int.Parse(cmds[1]);
-            Delay(waitTime*1000);
+            Delay(waitTime * 1000);
         }
 
         private void SetCmd(System.IO.Ports.SerialPort port, string cmd)
@@ -128,5 +158,8 @@ namespace POWER_SUPPLY_CONTROL_SIMPLE
         public double LastVolt { get => lastVolt; set => lastVolt = value; }
         public bool IsOutput { get => isOutput; set => isOutput = value; }
         public string Name { get => name; set => name = value; }
+        public bool IsPause { get => isPause; set => isPause = value; }
+        public bool IsStop { get => isStop; set => isStop = value; }
+        public bool IsRunning { get => isRunning; set => isRunning = value; }
     }
 }

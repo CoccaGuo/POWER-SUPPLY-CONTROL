@@ -124,7 +124,7 @@ namespace PSC_script_maker
         {
             string line;
             try
-            {   
+            {
                 line = Console.ReadLine();
                 if (line != null)
                 {
@@ -135,11 +135,11 @@ namespace PSC_script_maker
                     return " ";
                 }
             }
-            catch(Exception)
+            catch (Exception)
             {
                 return "";
             }
-            
+
         }
     }
 }
