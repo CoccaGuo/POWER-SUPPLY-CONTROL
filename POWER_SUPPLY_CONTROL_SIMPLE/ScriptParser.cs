@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Text;
 
 namespace POWER_SUPPLY_CONTROL_SIMPLE
 {
@@ -65,17 +66,6 @@ namespace POWER_SUPPLY_CONTROL_SIMPLE
             }
         }
 
-        public int Step(System.IO.Ports.SerialPort port, string cmd)
-        {
-            // SET
-            if (cmd.StartsWith("SET")) return SetCmd(port, cmd);
-            // WAIT
-            if (cmd.StartsWith("WAIT")) return Wait(cmd);
-            // END FUNC
-            if (cmd.StartsWith("END")) return -1;
-
-            return 0;
-        }
 
         // timer 用于计算等待时间
         public void Start(System.IO.Ports.SerialPort port, System.Windows.Forms.Label info, System.Windows.Forms.Timer t2)
@@ -86,9 +76,9 @@ namespace POWER_SUPPLY_CONTROL_SIMPLE
             foreach (string cmd in Commands)
             {
                 if (IsPause)
-                {
-                    info.Text = "Paused";
+                {   
                     t2.Enabled = false;
+                    info.Text += ", Paused";
                     while (IsPause)
                     {
                         Delay(1000);
@@ -103,16 +93,17 @@ namespace POWER_SUPPLY_CONTROL_SIMPLE
                 }
                 info.Text = "=> " + lastCmd + ", " + cmd;
                 lastCmd = cmd;
+                t2.Enabled = true;
                 try
                 {
-                    t2.Enabled = true;
-                    int answer = Step(port, cmd);
+                    // SET
+                    if (cmd.StartsWith("SET")) SetCmd(port, cmd);
+                    // WAIT
+                    if (cmd.StartsWith("WAIT")) Wait(cmd);
+                    // END FUNC
+                    if (cmd.StartsWith("END")) return;
                     // Delay for a while
-                    if (answer == -1)
-                    {
-                        return;
-                    }
-                    Delay(10);
+                    Delay(50);
                 }
                 catch (Exception)
                 {
@@ -133,11 +124,13 @@ namespace POWER_SUPPLY_CONTROL_SIMPLE
         private int SetCmd(System.IO.Ports.SerialPort port, string cmd)
         {
             string[] cmds = cmd.Split(' ');
+            
             switch (cmds[1])
             {
                 case "OUTPUT":
                     IsOutput = int.Parse(cmds[2]) == 1;
                     byte[] data_o = PortIO.SendSetCode(LastVolt, LastCurr, IsOutput);
+                    PortIO.printBytes(data_o);
                     port.Write(data_o, 0, data_o.Length);
                     break;
                 case "VOLT":
@@ -146,7 +139,6 @@ namespace POWER_SUPPLY_CONTROL_SIMPLE
                     port.Write(data_v, 0, data_v.Length);
                     break;
                 case "CURR":
-                    Console.WriteLine(cmd);
                     LastCurr = double.Parse(cmds[2]);
                     byte[] data_c = PortIO.SendSetCode(LastVolt, LastCurr, IsOutput);
                     port.Write(data_c, 0, data_c.Length);

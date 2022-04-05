@@ -106,6 +106,15 @@ namespace POWER_SUPPLY_CONTROL_SIMPLE
             return data;
         }
 
+        public static void printBytes(byte[] d)
+        {
+            foreach (byte b in d)
+            {
+                Console.Write(b.ToString("X")+ " ");
+            }
+            Console.WriteLine();
+        }
+
         /// <summary>
         /// CRC16_Modbus效验
         /// </summary>

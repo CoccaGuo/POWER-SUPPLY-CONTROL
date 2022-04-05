@@ -281,8 +281,6 @@
             // 
             this.portBox.Font = new System.Drawing.Font("微软雅黑", 10.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.portBox.FormattingEnabled = true;
-            this.portBox.Items.AddRange(new object[] {
-            "COM1"});
             this.portBox.Location = new System.Drawing.Point(3, 32);
             this.portBox.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.portBox.Name = "portBox";
@@ -368,7 +366,7 @@
         private System.Windows.Forms.Button portBtn;
         private System.Windows.Forms.Label label8;
         public System.Windows.Forms.Timer timer1;
-        private System.Windows.Forms.Timer timer2;
+        public System.Windows.Forms.Timer timer2;
         private System.Windows.Forms.Label spCurr;
         private System.Windows.Forms.Label spVolt;
         private System.Windows.Forms.Label label3;
