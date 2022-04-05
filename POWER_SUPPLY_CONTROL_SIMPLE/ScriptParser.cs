@@ -65,6 +65,18 @@ namespace POWER_SUPPLY_CONTROL_SIMPLE
             }
         }
 
+        public int Step(System.IO.Ports.SerialPort port, string cmd)
+        {
+            // SET
+            if (cmd.StartsWith("SET")) return SetCmd(port, cmd);
+            // WAIT
+            if (cmd.StartsWith("WAIT")) return Wait(cmd);
+            // END FUNC
+            if (cmd.StartsWith("END")) return -1;
+
+            return 0;
+        }
+
         // timer 用于计算等待时间
         public void Start(System.IO.Ports.SerialPort port, System.Windows.Forms.Label info)
         {
@@ -75,7 +87,7 @@ namespace POWER_SUPPLY_CONTROL_SIMPLE
             {
                 if (IsPause)
                 {
-                    info.Text += ", Paused";
+                    info.Text = "Paused";
                     while (IsPause)
                     {
                         Delay(1000);
@@ -92,14 +104,13 @@ namespace POWER_SUPPLY_CONTROL_SIMPLE
                 lastCmd = cmd;
                 try
                 {
-                    // SET
-                    if (cmd.StartsWith("SET")) SetCmd(port, cmd);
-                    // WAIT
-                    if (cmd.StartsWith("WAIT")) Wait(cmd);
-                    // END FUNC
-                    if (cmd.StartsWith("END")) return;
+                    int answer = Step(port, cmd);
                     // Delay for a while
-                    Delay(50);
+                    if (answer == -1)
+                    {
+                        return;
+                    }
+                    Delay(10);
                 }
                 catch (Exception)
                 {
@@ -109,14 +120,15 @@ namespace POWER_SUPPLY_CONTROL_SIMPLE
 
         }
 
-        private void Wait(string cmd)
+        private int Wait(string cmd)
         {
             string[] cmds = cmd.Split(' ');
             int waitTime = int.Parse(cmds[1]);
             Delay(waitTime * 1000);
+            return 0;
         }
 
-        private void SetCmd(System.IO.Ports.SerialPort port, string cmd)
+        private int SetCmd(System.IO.Ports.SerialPort port, string cmd)
         {
             string[] cmds = cmd.Split(' ');
             switch (cmds[1])
@@ -138,6 +150,7 @@ namespace POWER_SUPPLY_CONTROL_SIMPLE
                     port.Write(data_c, 0, data_c.Length);
                     break;
             }
+            return 0;
         }
 
 
@@ -150,6 +163,7 @@ namespace POWER_SUPPLY_CONTROL_SIMPLE
             }
             return;
         }
+
 
         public int Time { get => time; set => time = value; }
         public int Length { get => length; set => length = value; }

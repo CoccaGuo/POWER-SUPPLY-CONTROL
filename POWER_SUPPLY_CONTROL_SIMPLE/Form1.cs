@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Windows.Forms;
 
 namespace POWER_SUPPLY_CONTROL_SIMPLE
@@ -8,11 +9,36 @@ namespace POWER_SUPPLY_CONTROL_SIMPLE
         ScriptParser parser;
         int countdownTimer;
         int unstableExceptionCounter = 0;
+        bool isForm2Applied = false;
+        Form2 form2;
+        UDPServer server;
 
         public Form1()
         {
             InitializeComponent();
+            portBox.Items.AddRange(System.IO.Ports.SerialPort.GetPortNames());
             CheckForIllegalCrossThreadCalls = false;
+            server = new UDPServer();
+            form2 = new Form2(server);
+            server.SetupServer(form2.udpPort.Text);
+            server.StartListening();
+            server.UDPMessageReceived += UdpClient_UDPMessageReceived;
+        }
+
+        private void UdpClient_UDPMessageReceived(UdpStateEventArgs args)
+        {
+            if (form2 != null && form2.AllowCtrlCheckBox.Checked)
+            {
+               byte[] data = args.buffer;
+                if (data == null || data?[0] != 0xE2 || data?[1] != 0x10) return;
+                // 0x10 this PSC addr.
+                bool outputLabel = false;
+                if ((data?[3] & 0x10) != 0x10) return ;
+                if ((data?[3] & 0x10) == 0x01) outputLabel = true ;
+                byte[] sendData = PortIO.SendSetCode(data.Skip(4).Take(2).ToArray(), data.Skip(6).Take(2).ToArray(), outputLabel);
+                
+               serialPort1.Write(sendData, 0, sendData.Length);
+            }
         }
 
         private void portBtn_Click(object sender, EventArgs e)
@@ -79,6 +105,11 @@ namespace POWER_SUPPLY_CONTROL_SIMPLE
         private void serialPort1_DataReceived(object sender, System.IO.Ports.SerialDataReceivedEventArgs e)
         {
             Console.WriteLine("data recv.");
+            if (isForm2Applied)
+            {
+                server.SetupServer(form2.udpPort.Text);
+                isForm2Applied = false;
+            }
             ScriptParser.Delay(30);
             byte[] received_buf = new byte[20];
             serialPort1.Read(received_buf, 0, 20);
@@ -89,6 +120,13 @@ namespace POWER_SUPPLY_CONTROL_SIMPLE
                 ALabel.Text = string.Format("{0:F3}", result[1]);
                 spVolt.Text = string.Format("{0:F2}", result[2]) + " V";
                 spCurr.Text = string.Format("{0:F3}", result[3]) + " A";
+                form2.chartStep(result[0], result[1]);
+                byte[] result_buf = new byte[8];
+
+                if (form2.UDPCheckbox.Checked)
+                {
+                    server.udpClient.Send(PortIO.UDPSendCode(received_buf), 8, server.locatePoint);
+                }
             }
             catch (Exception)
             {
@@ -237,7 +275,24 @@ namespace POWER_SUPPLY_CONTROL_SIMPLE
 
         private void Form1_FormClosing(object sender, FormClosingEventArgs e)
         {
-            System.Environment.Exit(0);
+            try
+            {
+                byte[] data_o = PortIO.SendSetCode(0.0, 0.0, false);
+                serialPort1.Write(data_o, 0, data_o.Length);
+            }
+            catch (Exception ex)
+            {
+
+            }
+            finally
+            {
+                System.Environment.Exit(0);
+            }
+        }
+
+        private void linkLabel1_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        {
+            form2.Show();
         }
     }
 }

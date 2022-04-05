@@ -20,6 +20,22 @@ namespace POWER_SUPPLY_CONTROL_SIMPLE
             return data;
         }
 
+        public static byte[] UDPSendCode(byte[] recv)
+        {
+            byte[] data = new byte[8];
+            byte[] volt_part_real = recv.Skip(6).Take(2).ToArray();
+            byte[] curr_part_real = recv.Skip(8).Take(2).ToArray();
+            data[0] = 0xE2; //check
+            data[1] = 0x00; //to main
+            data[2] = 0x10; // power supply addr
+            data[3] = 0x00;
+            data[4] = volt_part_real[0];
+            data[5] = volt_part_real[1];
+            data[6] = curr_part_real[0];
+            data[7] = curr_part_real[1];
+            return data;
+        }
+
         public static double[] ParseRecvCode(byte[] recv)
         {
             try
@@ -43,6 +59,26 @@ namespace POWER_SUPPLY_CONTROL_SIMPLE
             {
                 return new double[] { 0, 0, 0, 0 };
             }
+        }
+        public static byte[] SendSetCode(byte[] b_v, byte[] b_c, bool isOutput)
+        {
+            byte[] data = new byte[13];
+            data[0] = 0x00;
+            data[1] = 0x10;
+            data[2] = 0x00;
+            data[3] = 0x00;
+            data[4] = 0x00;
+            data[5] = 0x05;
+            if (isOutput) data[6] = 0x01;
+            else data[6] = 0x00;
+            data[7] = b_v[0];
+            data[8] = b_v[1];
+            data[9] = b_c[0];
+            data[10] = b_c[1];
+            byte[] crc = ToModbus(data.Take(11).ToArray());
+            data[11] = crc[0];
+            data[12] = crc[1];
+            return data;
         }
 
         public static byte[] SendSetCode(double volt, double curr, bool isOutput)
