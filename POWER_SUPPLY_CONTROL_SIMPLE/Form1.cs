@@ -240,7 +240,7 @@ namespace POWER_SUPPLY_CONTROL_SIMPLE
             infoLabel.Text = "Exec: " + parser.Name;
             try
             {
-                parser.Start(serialPort1, infoLabel);
+                parser.Start(serialPort1, infoLabel, timer2);
                 parser = null;
                 infoLabel.Text = "Complete!";
             }

@@ -78,7 +78,7 @@ namespace POWER_SUPPLY_CONTROL_SIMPLE
         }
 
         // timer 用于计算等待时间
-        public void Start(System.IO.Ports.SerialPort port, System.Windows.Forms.Label info)
+        public void Start(System.IO.Ports.SerialPort port, System.Windows.Forms.Label info, System.Windows.Forms.Timer t2)
         {
             // TODO
             IsRunning = true;
@@ -88,6 +88,7 @@ namespace POWER_SUPPLY_CONTROL_SIMPLE
                 if (IsPause)
                 {
                     info.Text = "Paused";
+                    t2.Enabled = false;
                     while (IsPause)
                     {
                         Delay(1000);
@@ -104,6 +105,7 @@ namespace POWER_SUPPLY_CONTROL_SIMPLE
                 lastCmd = cmd;
                 try
                 {
+                    t2.Enabled = true;
                     int answer = Step(port, cmd);
                     // Delay for a while
                     if (answer == -1)

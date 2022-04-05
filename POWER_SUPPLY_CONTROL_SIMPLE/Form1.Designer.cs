@@ -367,7 +367,7 @@
         private System.Windows.Forms.OpenFileDialog openFileDialog1;
         private System.Windows.Forms.Button portBtn;
         private System.Windows.Forms.Label label8;
-        private System.Windows.Forms.Timer timer1;
+        public System.Windows.Forms.Timer timer1;
         private System.Windows.Forms.Timer timer2;
         private System.Windows.Forms.Label spCurr;
         private System.Windows.Forms.Label spVolt;
