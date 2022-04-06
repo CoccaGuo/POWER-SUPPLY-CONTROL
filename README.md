@@ -8,7 +8,38 @@ Instead of spending much time on changing the current or voltage very often, thi
 > The Controller was bought from Taobao.
 
 ![](readme.assets/demo.jpg)
-	
+
+## Releases
+
+https://github.com/CoccaGuo/POWER-SUPPLY-CONTROL/releases
+
+VER 2.0.0
+
+- 增加了图表功能
+- 增加了UDP服务器功能，可以从其他程序获得信息
+- [debug]增加了端口选择功能
+- [debug]增加了允许外部程序控制功能
+
+VER 2.1.0
+
+- 增加了端口选择功能
+
+- 增加了允许外部程序控制功能
+
+- 设定了UDP通信应有之8位byte结构
+
+  2.1.1
+
+  - 修复了初始段口不显示问题
+    2.1.2
+  - 修复了暂停后剩余时间还在减少的bug
+    2.1.3
+  - 修复了无法实际控制电流源的bug
+  - 修复了开始界面会显示两个COM1的bug
+
+这将是2.0版本的最后一个主要更新，大概也是程序此后的主要维护版本，因为其功能已经完备。
+上一个稳定版本是v1.5.1和v1.4.0	
+
 ## The script
 
 The script show look like this:
