@@ -4,6 +4,11 @@ Power Supply Controller(PSC) is a tool for controlling the workflow of changing 
 Instead of spending much time on changing the current or voltage very often, this software allows the user to write their commands in a script and execute them consequently.
 
 注意⚠️ 需要将电源通信波特率设置成19200.
+注意⚠️ 实践中可能出现的问题，请参考issues.
+
+https://github.com/CoccaGuo/POWER-SUPPLY-CONTROL/issues
+
+https://github.com/CoccaGuo/POWER-SUPPLY-CONTROL/issues/1
 	
 > The Controller is Wanptek WPS3010H (30V10A) with a special USB connector which may be added according to the request.
 
