@@ -11,6 +11,7 @@ Instead of spending much time on changing the current or voltage very often, thi
 https://github.com/CoccaGuo/POWER-SUPPLY-CONTROL/issues 
 
 https://github.com/CoccaGuo/POWER-SUPPLY-CONTROL/issues/1
+https://github.com/CoccaGuo/POWER-SUPPLY-CONTROL/issues/2
 	
 > The Controller is Wanptek WPS3010H (30V10A) with a special USB connector which may be added according to the request.
 
